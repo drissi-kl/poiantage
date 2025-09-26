@@ -340,7 +340,7 @@
 .employeeDetails > div .buttons{
     display: flex;
     justify-content: right;
-    padding: 10px;
+    padding: 20px;
     gap:10px
 }
 
@@ -351,7 +351,9 @@
     color: white;
     font-size: 16px;
 }
-.employeeDetails > div .buttons button.updateBtn, .employeeDetails > div .buttons button.expTime{
+.employeeDetails > div .buttons button.updateBtn, 
+.employeeDetails > div .buttons button.expTimeBtn,
+.employeeDetails > div .buttons button.timeOffBtn{
     background-color: #2563EB;
 }
 .employeeDetails > div .buttons button.closeBtn{
@@ -367,85 +369,82 @@
 
 
 /* employee delete */
-.employeeDelete{
-    position: fixed;
-    z-index: 1000;
-    top: 0; left: 0;
-    height: 100vh;
-    background-color: transparent;
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    .employeeDelete{
+        position: fixed;
+        z-index: 1000;
+        top: 0; left: 0;
+        height: 100vh;
+        background-color: transparent;
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-.employeeDelete .container{
-    background-color: white;
-    width: 40%;
-    border-radius: 5px;
-    overflow: hidden;
-}
+    .employeeDelete .container{
+        background-color: white;
+        width: 40%;
+        border-radius: 5px;
+        overflow: hidden;
+    }
 
-.employeeDelete .container .title{
-    background-color: #DC2626;
-    color: white;
-    margin-top: 0px;
-    padding: 10px;
+    .employeeDelete .container .title{
+        background-color: #DC2626;
+        color: white;
+        margin-top: 0px;
+        padding: 10px;
 
-}
+    }
 
-.employeeDelete .container .image{
-    height: 100px;
-    width: 100px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin: 10px 15px;
+    .employeeDelete .container .image{
+        height: 100px;
+        width: 100px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 10px 15px;
 
-}
-.employeeDelete .container .image img{
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-    object-position: center;
-}
+    }
+    .employeeDelete .container .image img{
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
 
-.employeeDelete .container .subtitle{
-    padding: 20px;
-}
-.employeeDelete .container .subtitle p:first-child{
-    font-size: 18px;
-}
+    .employeeDelete .container .subtitle{
+        padding: 20px;
+    }
+    .employeeDelete .container .subtitle p:first-child{
+        font-size: 18px;
+    }
 
-.employeeDelete .container .subtitle p span{
-    color: #999;
-    font-weight: 500;
-}
+    .employeeDelete .container .subtitle p span{
+        color: #999;
+        font-weight: 500;
+    }
 
-.employeeDelete .container .buttons{
-    display: flex;
-    justify-content: end;
-    padding: 10px;
-    gap: 10px;
-}
-.employeeDelete .container .buttons button{
-    border: none;
-    border-radius: 5px;
-    padding: 8px 15px;
-    font-size: 15px;
-    font-weight: 500;
-}
-.employeeDelete .container .buttons button.closeBtn{
-    border: 1px solid #DC2626;
-    color: #DC2626;
-}
-.employeeDelete .container .buttons button.deleteBtn{
-    background-color: #DC2626;
-    color: white    
-}
-
-
-
-/* employee delete */
+    .employeeDelete .container .buttons{
+        display: flex;
+        justify-content: end;
+        padding: 10px;
+        gap: 10px;
+    }
+    .employeeDelete .container .buttons button{
+        border: none;
+        border-radius: 5px;
+        padding: 8px 15px;
+        font-size: 15px;
+        font-weight: 500;
+    }
+        .employeeDelete .container .buttons button.closeBtn{
+            border: 1px solid #DC2626;
+            color: #DC2626;
+        }
+    .employeeDelete .container .buttons button.deleteBtn{
+        background-color: #DC2626;
+        color: white    
+    }
+    /* employee delete */
 
 
 
@@ -533,8 +532,16 @@
 
 
 
+/* time off */
+.timeOff form .buttons .confirmBtn{
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    color: white;
+    font-size: 16px;
+    background-color: #2563EB; 
+}
 
 
-
-
+/* time off *
 

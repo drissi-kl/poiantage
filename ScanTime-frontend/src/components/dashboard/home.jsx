@@ -526,9 +526,7 @@ export default function HomeDashboard({ user, employes, positionsList }) {
           />
         </h1>
         {isAdmin && (<>
-          <div>
-            <MdNotifications />
-          </div>
+          
           <button
             className="primary-btn"
             onClick={() => {

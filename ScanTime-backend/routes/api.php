@@ -58,7 +58,7 @@ Route::middleware('auth:sanctum')->controller(AppController::class)
 Route::middleware(['auth:sanctum', 'isDirector'])->controller(ScanController::class)
 ->group(function(){
     Route::post('/scans', 'store');
-    Route::post('/absent/{id}', 'absent');
+    Route::post('/timeOff/{id}', 'timeOff');
     Route::get('/checkAbsent', 'checkAbsent');
     Route::post('/holidays', 'holidays');
 });
@@ -87,6 +87,7 @@ Route::middleware(['auth:sanctum','isDirector'])->controller(PositionController:
 // middleware(['auth:sanctum', 'isDirector'])->
 Route::middleware(['auth:sanctum', 'isDirector'])->controller(ExceptionalTimeController::class)->group(function(){
     Route::get('/exceptionalTime', 'index');
+    Route::get('/exceptionalTime/{id}', 'show');
     Route::post('/exceptionalTime', 'store');
     Route::put('/exceptionalTime/{id}', 'update');
     Route::delete('/exceptionalTime/{id}', 'destroy');

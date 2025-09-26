@@ -146,23 +146,30 @@ class ScanController extends Controller
         }
     }
 
-    public function absent(Request $request, $id)
+    public function timeOff(Request $request, $id)
     {
         try {
-            $startDate = Carbon::parse($request->input('start_date'));
-            $endDate   = Carbon::parse($request->input('end_date'));
+            Carbon::setLocale('fr');
+
+            $startDate = Carbon::parse($request->input('startDate'));
+            $endDate   = Carbon::parse($request->input('endDate'));
 
             $employee = Employee::where('user_id', $id)->first();
-            $dayNumber = $startDate->diffInDays($endDate) - 1;
+            $dayNumber = $startDate->diffInDays($endDate) + 1;
+
 
             for ($i = 0; $i <= $dayNumber; $i++) {
                 $date = $startDate->copy()->addDays($i);
-                Scan::create([
-                    'employee_id' => $employee->id,
-                    'created_at'  => $date->format('Y-m-d'),
-                    'updated_at'  => $date->format('Y-m-d'),
-                    'state'       => $request->input('type'),
-                ]);
+                if($date->translatedFormat("l") != 'dimanche'){
+                    for($j = 0; $j < 4; $j++){
+                        Scan::create([
+                            'employee_id' => $employee->id,
+                            'created_at'  => $date->format('Y-m-d'),
+                            'updated_at'  => $date->format('Y-m-d'),
+                            'state'       => $request->input('type'),
+                        ]);
+                    }
+                }
             }
 
             return response()->json([

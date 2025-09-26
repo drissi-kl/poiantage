@@ -17,19 +17,31 @@ const createExpTimeApi = async (data) => {
     }
 }
 
-// const deleteExpTimeApi = async (id) => {
-//     try{
-//         const response = await customAPI.delete(`/exceptionalTime/${id}`);
-//         return response;
-//     }catch(error){
-//         if(isAxiosError(error)){
-//             throw error;
-//         }
-//         throw new Error('exists problem in deleteExpTimeApi function');
-//     }
-// }
+const getExpTimeApi = async (id) => {
+    try{
+        const response = await customAPI.get(`/exceptionalTime/${id}`);
+        return response.data;
+    }catch(error){
+        if(isAxiosError(error)){
+            throw error;
+        }
+        throw new Error('exists problem in createExpTimeApi function');
+    }
+}
 
-export {createExpTimeApi   }
+const deleteExpTimeApi = async (id) => {
+    try{
+        const response = await customAPI.delete(`/exceptionalTime/${id}`);
+        return response.data;
+    }catch(error){
+        if(isAxiosError(error)){
+            throw error;
+        }
+        throw new Error('exists problem in deleteExpTimeApi function');
+    }
+}
+
+export {createExpTimeApi, getExpTimeApi, deleteExpTimeApi  }
 
 
 

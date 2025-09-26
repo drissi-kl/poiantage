@@ -36,7 +36,7 @@ export default function Login() {
                     , 3000
                 )
 
-            }else if(message == "Invalid email or password." ){
+            }else if(message == "email or password not correct" ){
                 setErrorMessage("Adresse e-mail ou mot de passe invalide.");
                 reset({email: variable.email, password:''});
 
@@ -48,9 +48,6 @@ export default function Login() {
 
                 navigate('/dashboard');
             }
-        },
-        onError:(error)=>{
-          setErrorMessage(error.message)
         }
     })
     

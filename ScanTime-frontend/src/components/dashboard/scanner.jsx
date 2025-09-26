@@ -74,8 +74,8 @@ export default function Scanner() {
         };
         setSelectedUser(scanInfo);
       }else{
-        if(message == "ce scan n'est pas autorisé, car vous n'avez que 4 scans par jour")
-        setErrorMessage(message);
+        if(message == "this scan not allowed")
+        setErrorMessage("ce scan n'est pas autorisé, car vous n'avez que 4 scans par jour");
       }
     }
   })

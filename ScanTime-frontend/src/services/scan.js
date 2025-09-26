@@ -63,7 +63,19 @@ const checkAbsenceApi = async ()=>{
     }
 }
 
-export { getAllScanApi, getScanApi, createScanApi, createLeaveRequestApi, checkAbsenceApi  }
+const createTimeOffApi = async (id, body) =>{
+    try{
+        const response = await customAPI.post(`/timeOff/${id}`, body);
+        return response.data;
+    }catch (error){
+        if(isAxiosError(error)){
+            throw error;
+        }
+        throw new Error('exists error in checkAbsenceApi function');        
+    }
+}
+
+export { getAllScanApi, getScanApi, createScanApi, createLeaveRequestApi, checkAbsenceApi, createTimeOffApi  }
 
 
 

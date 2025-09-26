@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -16,6 +16,7 @@ import { loggedUserApi } from "../../services/auth";
 import { changePage } from "../../store/SlicePage";
 import Settings from "../../components/dashboard/settings";
 import Profile from "../../components/dashboard/profile";
+import { checkAbsenceApi } from "../../services/scan";
 
 export default function Dashboard(){
     const queryClient=useQueryClient();
@@ -91,6 +92,34 @@ export default function Dashboard(){
     // console.log("notifications", notifications)
     console.log("employees", employees)
     // console.log("positions", positions)
+
+
+
+    const checkAbsenceMutation = useMutation({
+        mutationFn: checkAbsenceApi,
+        onSuccess: (data, variable, context)=>{
+            console.log(data)
+            queryClient.invalidateQueries(["employees"]);
+        }
+    })
+
+    const checkAbsence = () =>{
+        checkAbsenceMutation.mutate()
+    }
+
+    // for check absence for every 18 hour;
+    // useEffect(
+    //     ()=>{
+    //         const checkAbsencePeriod = setInterval(
+    //             ()=>{
+    //                 checkAbsence();
+    //             }, 1000*60*60*18
+    //         )
+
+    //         return ()=>clearInterval(checkAbsencePeriod)
+    //     }, []
+    // )
+
 
 
     return <div>

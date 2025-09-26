@@ -26,6 +26,29 @@ class ExceptionalTimeController extends Controller
         }
     }
 
+    public function show(Request $request, $id){
+        try{
+            $expTime = ExceptionalTime::where('employee_id', $id)->get();
+            if($expTime){
+                return response()->json([
+                    'message'=>"this employee has exceptional time",
+                    'expTime' => $expTime
+                ]); 
+
+            } else {
+                return response()->json([
+                    'message'=>"this employee has not any exceptional time"
+                ]); 
+            }
+            
+        } catch (Exception $e){
+            return response()->json([
+                'message'=>$e->getMessage(),
+                'error'=>'exists error'
+            ]);    
+        }
+    }
+
     public function store(Request $request){
         try{
             $formfield = $request->validate([
@@ -66,36 +89,19 @@ class ExceptionalTimeController extends Controller
     }
 
 
-    public function update(Request $request, $id){
-        try{
-            $formfield = $request->validate([
-                'arrivalTime'=>'date_format:H:i',
-                'dayName'=>'string'
-            ]);
-
-            $expTime = ExceptionalTime::find($id);
-            $expTime->fill($formfield);
-            $expTime->save();
-            return response()->json([
-                'message'=>"update exceptional time for employee successfuly",
-            ]); 
-            
-        } catch (Exception $e){
-            return response()->json([
-                'message'=>$e->getMessage(),
-                'error'=>'exists error'
-            ]);    
-        }
-    }
-
     public function destroy($id){
         try{
             $expTime = ExceptionalTime::find($id);
-            $expTime->delete();
-            return response()->json([
-                'message'=>"delete exceptional time for employee successfuly",
-            ]); 
-            
+            if($expTime){
+                $expTime->delete();
+                return response()->json([
+                    'message'=>"delete exceptional time for employee successfully",
+                ]); 
+            } else {
+                return response()->json([
+                    'message'=>'not exists any exceptional has this id'
+                ]);
+            }
         } catch (Exception $e){
             return response()->json([
                 'message'=>$e->getMessage(),
