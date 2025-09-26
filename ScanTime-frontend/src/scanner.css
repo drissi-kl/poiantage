@@ -1,0 +1,9 @@
+.checkAbsence{
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    color: white;
+    font-size: 16px;
+    background-color: #2563EB;
+    margin-bottom: 20px;
+}

@@ -1,0 +1,184 @@
+import { FaArrowAltCircleLeft } from 'react-icons/fa';
+import { FaArrowLeft } from 'react-icons/fa';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { updateEmployeeApi } from "../../../services/employee";
+import { createExpTimeApi } from '../../../services/exceptionTime';
+// import { defaultImg } from "/images/defaultImg.webp"
+
+export default function EmployeeDetails({employee, closeEmployeeDetails}){
+    // console.log(employee)
+    const queryClient = useQueryClient();
+    const [isUpdate, setIsUpdate]= useState(false);
+    const [isExpTime, setIsExpTime]= useState(false);
+
+    // get position from cache for show it in update select position
+    const [positions, setPotions]=useState(queryClient.getQueryData(["positions"]));
+    const {register, handleSubmit, reset, formState}=useForm({
+        defaultValues:{salaryHour: employee.employee.salaryHour||0 }
+    });
+    
+    const daysName = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+
+    const updateFormDateMutation = useMutation({
+        mutationFn:(data)=>updateEmployeeApi(employee.id, data),
+        onSuccess:(data, variable, context)=>{
+            queryClient.invalidateQueries(["employees"]);
+            // console.log("data",data);
+            closeEmployeeDetails();
+        }
+    })
+    const updateformDate = (e) => {
+        updateFormDateMutation.mutate(e)
+        // console.log(e)
+    }
+
+
+    const expTimeMutation = useMutation({
+        mutationFn:(body)=> createExpTimeApi(body),
+        onSuccess:(data, variable, context)=>{
+            console.log("data", data);
+            console.log("variable", variable);
+        }
+    })
+    const expTimeFormData = (e)=>{
+        console.log('drissi', e);
+        expTimeMutation.mutate(e)
+        setIsExpTime(false);
+        reset()
+        console.log('expTimeFormData mutation')
+    }
+    
+    document.addEventListener('keydown', (e)=>{
+        if(e.key == "Escape"){
+            closeEmployeeDetails()
+        }
+    })
+
+
+
+    return <div className="employeeDetails" onClick={(e)=>{closeEmployeeDetails()}}>
+        <div >
+            <h2>les information d'employee</h2>
+            <div className="displayData" onClick={(e)=>{e.stopPropagation()}}>
+                <div className="left-side">
+                    <div className="image">
+                        <img src="/images/defaultImg.webp" alt="not found" />
+                    </div>
+                    <div className="name">
+                        <p className="title">nom complet:</p>
+                        <p className="value">{employee.name}</p>
+                    </div>
+                </div>
+
+                <div className="rigth-side">
+                    {(isUpdate || isExpTime) && <div className='backDetails'>
+                        <button onClick={()=>{
+                            setIsExpTime(false);
+                            setIsUpdate(false);
+                        }} >
+                            <FaArrowLeft/>
+                        </button>
+
+                    </div>}
+
+                    {isUpdate ? <form onSubmit={handleSubmit(updateformDate)} method="post">
+                            <div className="postForm">
+                                <label htmlFor="Postion">Postion</label>
+                                <select {...register('position_id')} id="Postion">
+                                    {
+                                        positions.map((position, index)=><option key={index} value={position.id} selected={position.id == employee.employee.position_id} >{position.name}</option>)
+                                    }
+                                </select>
+                            </div>
+
+                            <div className="salaryForm">
+                                <label htmlFor="salaryHour">Salaire Horaire (DH)</label>
+                                <input type="number" {...register('salaryHour')} placeholder="Salaire Horaire" id="salaryHour" />
+                            </div>
+
+                            <button className="save" type="submit">save</button>
+                        </form>
+                        : isExpTime? <div>
+                            <p className='description'>
+                                This action creates an exceptional time for an employee. For example, if an employee’s regular start time 
+                                is 8:30, but we want them to start at 10:00 on Monday, we can set this exception so that when they scan in 
+                                at 10:00 on Monday, it will not be registered as late
+                            </p>
+                            <form onSubmit={handleSubmit(expTimeFormData)} action="post" >
+                                <div className="postForm">
+                                    <label htmlFor="day">day</label>
+                                    <select {...register('dayName')} id="day">
+                                        {
+                                            daysName.map((day, index)=><option key={index} value={day} > {day} </option>)
+                                        }
+                                    </select>
+                                </div>
+
+                                <div className="salaryForm">
+                                    <label htmlFor="arrivalTime">Salaire Horaire (DH)</label>
+                                    <input type="time" {...register('arrivalTime')} id="arrivalTime" />
+                                </div>
+
+                                <button className="save" >save</button>
+                            </form>
+                        </div>
+                        :<div>
+                            <div className="email">
+                                <p className="title" >Email:</p>
+                                <p className="value">{employee.email}</p>
+                            </div>
+                            <div className="poste">
+                                <p className="title" >Poste:</p>
+                                <p className="value">{employee.employee.position.name}</p>
+                            </div>
+                            <div className="arrivalHour">
+                                <p className="title" >Heure d'Arrivée:</p>
+                                <p className="value">{employee.employee.position.arrivalTime}</p>
+                            </div>
+                            <div className="hourSalary">
+                                <p className="title" >Salaire Horaire:</p>
+                                <p className="value">{employee.employee.salaryHour} DH</p>
+                            </div>
+                            <div className="posteSalary">
+                                <p className="title" >Salaire du Poste:</p>
+                                <p className="value">{employee.employee.position.salaryHour} DH</p>
+                            </div>
+                        </div>
+
+
+                    }
+                </div>
+                
+
+            </div>
+            <div className="buttons" onClick={(e)=>{e.stopPropagation()}}>
+                <button className="expTime" onClick={(e)=>{
+                    e.stopPropagation()  
+                    setIsExpTime(true)
+                    setIsUpdate(false)              
+                    console.log('expTime');
+                }} > exp time</button>
+
+                <button className="updateBtn" onClick={(e)=>{
+                    console.log('update'); 
+                    setIsUpdate(true);
+                    setIsExpTime(false)
+                    e.stopPropagation()  
+                }}>update</button>
+
+                <button className="closeBtn" onClick={(e)=>{
+                    e.stopPropagation();
+                    console.log('close');
+                    closeEmployeeDetails();
+                }}>ferme</button>
+            </div>
+
+
+
+
+
+        </div>
+    </div>
+}

@@ -1,0 +1,540 @@
+/* action button timesheet, information and delete */
+.actionBtn{
+    color: white;
+    border: none;
+    padding:10px 15px ;
+    border-radius: 5px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.5s
+}
+.actionBtn:hover{
+    transform: scale(1.01);
+    box-shadow: 0px 0px 5px 1px gray;
+}
+
+.actionBtn.sheetBtn{
+    background-color: #2563EB;
+}
+
+.actionBtn.informationBtn{
+    background-color: #10B981;
+}
+
+.actionBtn.deleteBtn{
+    background-color: #DC2626;
+}
+/* action button timesheet, information and delete */
+
+
+
+/* this part linked with month and year select and download button */
+.timeSheet{
+    min-height: 100%;
+    width: calc(100% - 20px);
+    background-color: rgb(255, 255, 255);
+    position: absolute;
+    top: 0; left: 0;
+    z-index: 1000;
+    padding: 10px;
+}
+
+.timeSheet .closeBtn{
+    display: flex;
+    justify-content: right;
+}
+.timeSheet .closeBtn button{
+    background-color: transparent;
+    border: none;
+    font-size: 26px;
+    margin: 10px;
+    padding: 0;
+    color:#2563EB;
+    font-weight: bold;
+    transform: rotate(0deg);
+    transition: 0.5s
+}
+.timeSheet .closeBtn button:hover{
+    transform: rotate(180deg);
+}
+
+.timeSheet .dateAndDownload{
+    display: flex;
+    justify-content: space-between;
+}
+
+.timeSheet .dateAndDownload .date{
+    display: flex;
+}
+
+
+.timeSheet .dateAndDownload .date p{
+    font-size: 18px;
+    margin-right: 10px;  
+    font-weight: 700;
+    color:#2563EB;
+}
+.timeSheet .dateAndDownload .date div {
+    margin: auto;
+    margin-right: 15px;
+}
+.timeSheet .dateAndDownload .date div select {
+    padding: 8px 15px;
+    border: 1px solid #2563EB;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color:white;
+    font-weight: 500;
+    color: #2563EB
+}
+
+
+.timeSheet .dateAndDownload .download button{
+    background-color: #2563EB;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px
+}
+/* this part linked with month and year select and download button */
+
+
+
+/* this part linked with cards for show to admin how much hours work this employees also how much times was late */
+.timeSheet .cardDetails {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-top: 30px;
+}
+
+
+.timeSheet .cardDetails div{
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;    
+    transition: 0.5s;
+}
+.timeSheet .cardDetails div:hover{ 
+    transform: scale(0.95) ;
+    box-shadow: 0 2px 15px 10px rgba(0, 0, 0, 0.1);
+
+
+}
+
+.timeSheet .cardDetails div .title{
+    font-size: 18px;
+    font-weight: 500;
+    text-align: center;
+}
+.timeSheet .cardDetails div .value{
+    font-size: 24px;
+    font-weight: 800;
+    text-align: center;
+    color:#2563EB
+}
+
+
+
+/* this part linked with cards for show to admin how much hours work this employees also how much times was late */
+
+/* in this table we show the useful informations about scan */
+.tableDetails{
+}
+
+.tableDetails table{
+    width: 100%;
+    border-spacing: 0px;
+}
+
+.tableDetails table thead th{
+    background-color: #2563EB;
+    color: white;
+    padding: 10px;
+}
+.tableDetails table thead th:first-child{
+    border-top-left-radius: 5px;
+}
+.tableDetails table thead th:last-child{
+    border-top-right-radius: 5px;
+}
+
+
+.tableDetails table td{
+    text-align: center;
+    padding: 10px;
+    /* border-bottom: 0.5px solid #2563EB ; */
+}
+
+.tableDetails table tbody tr .state.Present{
+    background-color: #10B981;
+}
+.tableDetails table tbody tr .state.Retard{
+    background-color: #FFC107;
+}
+.tableDetails table tbody tr .state.Absent{
+    background-color: #DC2626;
+}
+
+/* in this table we show the useful informations about scan */
+
+
+/* employee details */
+.employeeDetails{
+    background-color: transparent;
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    top: 0px; left: 0;
+    z-index: 1000;    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.employeeDetails > div{
+    background-color: rgb(255, 255, 255);
+    width: 60vw;
+    margin:0px auto;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+}
+
+.employeeDetails > div h2{
+    margin:0px ;
+    padding: 10px;
+    background-color: #2563EB;
+    color: white ;
+  
+}
+
+.employeeDetails > div .displayData{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 20px;
+    gap: 40px;
+}
+
+.employeeDetails > div .displayData .title{
+    font-size: 16px;
+    color: #888;
+    font-weight: 500;}
+
+.employeeDetails > div .displayData .value{
+   font-size: 16px;
+   margin-bottom: 20px;
+}
+
+.employeeDetails > div .displayData .left-side .name{
+    
+}
+
+.employeeDetails > div .displayData .left-side .image{
+    height: 200px;
+    width: 200px;
+    background:#999;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+.employeeDetails > div .displayData .left-side .image img{
+    height: 100%;
+    width: 100%;
+    object-position: center;
+
+}
+
+.employeeDetails .rigth-side .backDetails{
+    display: flex;
+    justify-content: end;
+}
+
+
+.employeeDetails .rigth-side .backDetails button{
+    text-align: end;
+    font-size: 20px;
+    color:#2563EB;
+    border: none;
+    background: transparent;
+    transition: 0.5s;
+}
+.employeeDetails .rigth-side .backDetails button:hover{
+    transform: scale(1.1);
+}
+
+.employeeDetails .rigth-side form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.employeeDetails .rigth-side form div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.employeeDetails .rigth-side form div label{
+    font-weight: 500;
+}
+
+.employeeDetails .rigth-side form div input, .employeeDetails .rigth-side form div select{
+    padding: 8px 10px;
+    outline: none;
+    border: 1px solid #999;
+    border-radius: 5px;
+}
+
+.employeeDetails .message{
+    position: absolute;
+    top:0px;
+    width: 100%;
+    top:40%;
+}
+.employeeDetails .message p{
+    margin: auto;
+    width: fit-content;
+    padding: 20px 30px;
+    border-radius: 5px;
+}
+.employeeDetails .message .errorMessage{
+    color: #c62828;
+    background-color: #ffebee;
+    border: 2px solid #ef9a9a;
+}
+.employeeDetails .message .successMessage{
+    color: #27ae60;
+    background-color: #e8fde8;
+    border: 2px solid #d7f8d7;
+}
+.employeeDetails .rigth-side .exceptionalTime .description{
+    margin:20px 0px 30px 0px;
+}
+
+.employeeDetails .rigth-side form button.save{
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    color: white;
+    font-size: 16px;
+    background-color: #2563EB;
+}
+
+
+
+
+.employeeDetails > div .buttons{
+    display: flex;
+    justify-content: right;
+    padding: 10px;
+    gap:10px
+}
+
+.employeeDetails > div .buttons button{
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    color: white;
+    font-size: 16px;
+}
+.employeeDetails > div .buttons button.updateBtn, .employeeDetails > div .buttons button.expTime{
+    background-color: #2563EB;
+}
+.employeeDetails > div .buttons button.closeBtn{
+    background-color: #DC2626;
+}
+
+
+
+
+/* employee details */
+
+
+
+
+/* employee delete */
+.employeeDelete{
+    position: fixed;
+    z-index: 1000;
+    top: 0; left: 0;
+    height: 100vh;
+    background-color: transparent;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.employeeDelete .container{
+    background-color: white;
+    width: 40%;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.employeeDelete .container .title{
+    background-color: #DC2626;
+    color: white;
+    margin-top: 0px;
+    padding: 10px;
+
+}
+
+.employeeDelete .container .image{
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 10px 15px;
+
+}
+.employeeDelete .container .image img{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.employeeDelete .container .subtitle{
+    padding: 20px;
+}
+.employeeDelete .container .subtitle p:first-child{
+    font-size: 18px;
+}
+
+.employeeDelete .container .subtitle p span{
+    color: #999;
+    font-weight: 500;
+}
+
+.employeeDelete .container .buttons{
+    display: flex;
+    justify-content: end;
+    padding: 10px;
+    gap: 10px;
+}
+.employeeDelete .container .buttons button{
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    font-size: 15px;
+    font-weight: 500;
+}
+.employeeDelete .container .buttons button.closeBtn{
+    border: 1px solid #DC2626;
+    color: #DC2626;
+}
+.employeeDelete .container .buttons button.deleteBtn{
+    background-color: #DC2626;
+    color: white    
+}
+
+
+
+/* employee delete */
+
+
+
+/* leave request */
+.leaveRequest{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 100vh;
+    width: 100vw;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.leaveRequest .container{
+    background-color: white;
+    width: 40%;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.leaveRequest .container .title{
+    background-color: #2563EB;
+    color: white;
+    margin-top: 0px;
+    padding: 10px;
+}
+
+.attentionMessage{
+    padding: 10px;
+    font-size: 16px;
+}
+
+.leaveRequest .container form{
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.leaveRequest .container form div{
+    display: flex;
+    flex-direction: column;
+    gap:10px
+}
+
+.leaveRequest .container form div label{
+    font-weight: 500;
+}
+
+.leaveRequest .container form div select, .leaveRequest .container form div input{
+    padding: 8px 10px;
+    outline: none;
+    border: 1px solid #999;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.leaveRequest .container form .buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: end;   
+}
+
+.leaveRequest .container form .buttons button{ 
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    font-size: 15px;
+    font-weight: 500;
+}
+.leaveRequest .container .buttons button.closeBtn{
+    border: 1px solid #2563EB;
+    color: #2563EB;
+}
+.leaveRequest .container .buttons button.confirmBtn{
+    background-color: #2563EB;
+    color: white    
+}
+
+/* leave request */
+
+
+
+
+
+
+
+
+

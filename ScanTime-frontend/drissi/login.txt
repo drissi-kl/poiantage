@@ -1,0 +1,134 @@
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import CryptoJS from "crypto-js";
+import { useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+
+import { loginApi } from "../../services/auth";
+
+
+
+export default function Login() {
+    const queryClient = useQueryClient();
+    const [apiError, setApiError]=useState('');
+    const navigate = useNavigate();
+    
+    const {handleSubmit, register, formState, reset}=useForm({
+        mode:'onBlur'
+    });
+    const {errors, isValid, isSubmitting }=formState;
+    
+    const loginMutation = useMutation({
+        mutationFn: (body)=>loginApi(body),
+        onSuccess:(data, variable)=>{
+            const message = data.message;
+            console.log(data)
+            if(message == "this account not valide, check your email"){
+                setApiError("this account not valide, check your email");
+                setTimeout(
+                    ()=>navigate("/verification-code")
+                    , 1500
+                )
+
+            }else if(message == "email or password not correct" ){
+                setApiError("Email ou mot de passe incorrect");
+                reset({email: variable.email, password:''});
+
+            }else if(message == "log in successfully"){
+                document.cookie = `token=${data.token}; path=/; max-age=86400;`;
+                queryClient.setQueryData(['user'], data.user);
+                queryClient.setQueryData(['notifications'], data.notifications || []);
+                navigate('/dashboard');
+            }
+        },
+        onError:(error)=>{
+          setApiError(error.message)
+        }
+    })
+    
+    const sendForm=(data)=>{
+        console.log(data)
+        loginMutation.mutate(data)
+    }
+
+    useEffect(() => {
+        document.title = "Connexion | ScanTime";
+        return () => {
+            document.title = "ScanTime";
+        }}, []
+    );
+
+
+  return (
+    <div className="login-container">
+        <div className="login-card">
+            <div className="login-header">
+                <h2>Connexion</h2>
+            </div>
+
+        {apiError && <div className="alert alert-error"> {apiError} </div>}
+
+        <form onSubmit={handleSubmit(sendForm)} className="login-form">
+          <div className="form-group1">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              {...register('email',
+                {
+                  pattern: {value :/^[A-Za-z]{1,20}[0-9]{0,6}@[A-Za-z]{4,10}\.[A-Za-z]{2,5}$/, message:"L'email est invalide"}
+                }
+              )}
+              className={errors.email ? "error" : ""}
+              placeholder="Entrez votre email"
+            />
+            {errors.email && (
+              <span className="error-message">{errors.email.message}</span>
+            )}
+          </div>
+
+          <div className="form-group1">
+            <label htmlFor="password">Mot de passe</label>
+            <input
+              type="password"
+              id="password"
+              {...register('password', 
+                {
+                    minLength:{value:6, message:"Le mot de passe doit comporter au moins 6 caractères."}
+                }
+              )}
+              className={errors.password ? "error" : ""}
+              placeholder="Entrez votre mot de passe"
+            />
+            {errors.password && (
+              <span className="error-message">{errors.password.message}</span>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            disabled={!isValid || isSubmitting}
+            className="login-button"
+          >
+            {isSubmitting ? "Connexion..." : "Se connecter"}
+          </button>
+
+          <div className="login-footer">
+            <span>
+              Vous n'avez pas de compte ? <Link to="/register">S'inscrire</Link>
+            </span>
+          </div>
+        </form>
+      </div>
+      <div className="login-background">
+        <img
+          src="/images/QR Code.gif"
+          alt="QR Code Animé en Arrière-plan"
+          className="background-gif pulse-animation"
+        />
+      </div>
+    </div>
+  );
+}

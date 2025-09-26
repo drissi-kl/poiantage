@@ -1,0 +1,135 @@
+.containerPosition{
+    padding: 20px;
+}
+
+.containerPosition h1{
+    margin-bottom: 20px;
+}
+
+/* message  */
+.containerPosition .message{
+    position: absolute;
+    top:0px;
+    left: 0px;
+    width: 100%;
+    top:40%;
+}
+.containerPosition .message p{
+    margin: auto;
+    width: fit-content;
+    padding: 20px 30px;
+    border-radius: 5px;
+}
+.containerPosition .message .errorMessage{
+    color: #c62828;
+    background-color: #ffebee;
+    border: 2px solid #ef9a9a;
+}
+.containerPosition .message .successMessage{
+    color: #27ae60;
+    background-color: #e8fde8;
+    border: 2px solid #d7f8d7;
+}
+/* message  */
+
+
+
+.containerPosition .createPosition{
+    background: #eee;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 30px;
+}
+.containerPosition .createPosition .title{
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+.containerPosition .createPosition form>div{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+.containerPosition .createPosition form .errors{
+    margin-bottom: 10px;
+}
+.containerPosition .createPosition form>div>div{
+    margin-bottom: 5px;
+    display: flex;
+}
+.containerPosition .createPosition form>div>div input{
+    outline: none;
+    border: 1px solid #999;
+    border-radius: 5px;
+    display: block;
+    padding: 8px 15px;
+    flex-grow: 1;
+    font-size: 16px;
+}
+.containerPosition .createPosition form button{
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    color: white;
+    font-size: 16px;
+    background-color: #2563EB;
+}
+
+.containerPosition .createPosition form .buttons{
+    margin-top: 10px;
+    display: flex;
+}
+
+
+.containerPosition .showPostions{
+    padding: 10px;
+    background: #eee;
+    border-radius: 5px;
+}
+.containerPosition .showPostions .title{
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.containerPosition .showPostions>div{
+
+}
+
+.containerPosition .showPostions .showPostion{
+    background-color: white;  
+    margin-bottom: 20px;  
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-radius: 5px;
+}
+.containerPosition .showPostions .showPostion .infos p{
+    
+}
+.containerPosition .showPostions .showPostion .infos p span{
+    color: #777;
+    font-weight: 500;
+}
+
+.containerPosition .showPostions .showPostion .buttons .updatebtn{
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    color: white;
+    font-size: 16px;
+    background-color: #2563EB;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
