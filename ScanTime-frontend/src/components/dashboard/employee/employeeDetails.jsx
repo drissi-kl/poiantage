@@ -80,8 +80,6 @@ export default function EmployeeDetails({employee, closeEmployeeDetails}){
         queryFn: ()=>getExpTimeApi(employee.employee.id)
     })
 
-            console.log('expTimeEmp', expTimeEmp)
-
     
 
 // show all exception time of an employee logic
@@ -118,11 +116,31 @@ export default function EmployeeDetails({employee, closeEmployeeDetails}){
     const timeOffMutation= useMutation({
         mutationFn: (data)=>createTimeOffApi(data.id, data.body),
         onSuccess: (data, variable, context)=>{
-            console.log(data);
-            console.log(variable);
+            const message = data.message;
+            if(message == 'create time off rejected'){
+                const type =(variable.body.type == "vacation")?"conge":"malade";
+                setSuccessMessage(`la demand de ${type} est rejete`);
+                queryClient.invalidateQueries(["employees"]);
+                setTimeout(
+                    ()=>{setErrorMessage(null); setSuccessMessage(null)}
+                    , 2000
+                )
+            }
+            if(message == 'create time off successful'){
+                setSuccessMessage(`la demand de ${variable.body.type == "vacation"?"conge":"malade"} est accepte`);
+                queryClient.invalidateQueries(["employees"]);
+                setTimeout(
+                    ()=>{setErrorMessage(null); setSuccessMessage(null)}
+                    , 2000
+                )
+            }
+
+            console.log("data", data);
+            console.log("variable", variable.body.type);
             setIsTimeOff(false);
             timeOffForm.reset();
             queryClient.invalidateQueries(["employees"]);
+
         }
     })
     const timeOff = (e) => {
@@ -214,8 +232,7 @@ export default function EmployeeDetails({employee, closeEmployeeDetails}){
                             <button className="save">save</button>
                         </form>
                         : isExpTime? <div className='exceptionalTime'>
-                            {
-                                !isExpTimeUpdate? <>
+                            {!isExpTimeUpdate? <>
                                 <p className='description'>
                                     Il définit une heure de début personnalisée pour un employé un jour spécifique 
                                     afin que son scan ne soit pas marqué en retard.
@@ -249,15 +266,16 @@ export default function EmployeeDetails({employee, closeEmployeeDetails}){
                             </>
                             : <div className='showExcTime'>
                                 {
-                                    expTimeEmp.expTime.map((item, index)=>{return <div key={index}>
+                                    expTimeEmp.expTime.map((item, index)=>{return <div className='expTimeItem' key={index}>
                                         <p>{item.dayName}</p>
                                         <p>{item.arrivalTime}</p>
-                                        <button onClick={()=>deleteExpTime(item.id)}>delete</button>
+                                        <button className='delete' onClick={()=>deleteExpTime(item.id)}>delete</button>
                                     </div> })
                                 }
-
-                                <button className="save" onClick={()=>setIsExpTimeUpdate(false)}>back</button>
-                            </div>
+                                <div className="back">
+                                    <button onClick={()=>setIsExpTimeUpdate(false)}>back</button>
+                                </div>
+                                </div>
                             }
                            
                         </div>
@@ -320,6 +338,7 @@ export default function EmployeeDetails({employee, closeEmployeeDetails}){
                 
 
             </div>
+
             <div className="buttons" onClick={(e)=>{e.stopPropagation()}}>
                 <button className="timeOffBtn" onClick={(e)=>{
                     e.stopPropagation();  

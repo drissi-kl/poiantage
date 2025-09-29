@@ -165,10 +165,10 @@ export default function Sidebar({ user }) {
               </>
             ) : (
               <>
-                {/* <li
+                <li
                   className={`item ${currentPage === "home" ? "active" : ""}`}
                   onClick={() =>
-                    chagePage("home")
+                    switchPage("home")
                   }
                 >
                   <HiOutlineHome className="icon" />{" "}
@@ -177,21 +177,13 @@ export default function Sidebar({ user }) {
                 <li
                   className={`item ${currentPage === "Timetable" ? "active" : ""}`}
                   onClick={() =>
-                    chagePage("Timetable")
+                    switchPage("timesheet")
                   }
                 >
                   <Ri24HoursFill className="icon" />
-                  {!isCollapsed && <span>Timetable</span>}
+                  {!isCollapsed && <span>Time Sheet</span>}
                 </li>
-                <li
-                  className={`item ${currentPage === "profile" ? "active" : ""}`}
-                  onClick={() =>
-                    chagePage("profile")
-                  }
-                >
-                  <CiSettings className="icon" />
-                  {!isCollapsed && <span>Settings</span>}
-                </li> */}
+                
               </>
             )}
           </ul>

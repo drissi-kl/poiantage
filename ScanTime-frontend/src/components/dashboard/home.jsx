@@ -38,11 +38,11 @@ export default function HomeDashboard({ user, employes, positionsList }) {
 
   // drissi
   const dispatch = useDispatch();
-
   const queryClient= useQueryClient();
   const [successMessage, setSuccessMessage]= useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  // we need postions list if we went add a new employee
   const [positions, setpositions] = useState(positionsList);
   useEffect(() => {
     setpositions(positionsList);
@@ -93,7 +93,7 @@ export default function HomeDashboard({ user, employes, positionsList }) {
   };
 
   // for save employee in database;
-  const handleAddEmployee = async (formfield) => {
+  const handleAddEmployee = (formfield) => {
     formfield.role = "employee";
     formfield.QRcode = generateQRCode(formfield);
     createEmployeeMutation.mutate(formfield);
@@ -101,8 +101,8 @@ export default function HomeDashboard({ user, employes, positionsList }) {
   };
 
 
-  // for know how much employee is working right now;
-  const drissiFunction = ()=> {
+  // for know how much any employee work from right now;
+  const employeesStatistic = ()=> {
     let numEmployee = employes?.length || 0;
     let currentWorking = 0; // the employees exists into the company
     let completdScans = 0; // the employees completed its scans, that mean all employees workes and completed its day
@@ -177,14 +177,73 @@ export default function HomeDashboard({ user, employes, positionsList }) {
       'totaldailyHours' : totalDailyHours
     }
   }
-
-  drissiFunction()
-  console.log(drissiFunction().totaldailyHours)
-
+  employeesStatistic()
+  // for know how much any employee work from right now;
   
-  // drissi
 
+  // for know how much an employee work from right now;
+  const curDate = new Date();
+  const [selectMonth, setSelectMonth]=useState(curDate.getMonth()+1);
+  const mois = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
+  const employeeStatict = () =>{
+    if(user.role == 'employee'){
+      const today =`${new Date(Date.now()).getFullYear()}-${String(new Date(Date.now()).getMonth()+1).padStart(2, '0')}-${String(new Date(Date.now()).getDate()).padStart(2, '0')}`;
+      const nbrDay = new Date(curDate.getFullYear(), curDate.getMonth(), 0).getDate();
+      let presence = 0;
+      let retard = 0;
+
+      const scans = user.employee.scans;
+      const scansMonthly = [];
+      scans.forEach((scan)=> { if(scan.created_at.match(/[0-9]{4}-[0-9]{2}/g)[0] == today.match(/[0-9]{4}-[0-9]{2}/g)[0]){
+        if(scan.state == 'arrivalTime'){
+          presence++;
+          if(scan.enRetard == true){
+            retard++;
+          }
+        }
+      }})
+
+      const dailyHour = [];
+      for(let i=1; i<=nbrDay; i++){
+        const dailyHourTab=[]
+        scans.forEach(scan => {
+          if(scan.created_at.match(/[0-9]{4}-[0-9]{2}-[0-9]{2}/g)[0] == `${curDate.getFullYear()}-${String(selectMonth).padStart(2, '0')}-${String(i).padStart(2, '0')}`    ){
+            dailyHourTab.push( new Date(scan.created_at).getTime())
+          }
+        })
+
+        dailyHourTab.sort((a,b)=> a - b)
+        if(dailyHourTab.length == 1){
+          let calcDailyHour = new Date().getTime() - dailyHourTab[0] ;
+          calcDailyHour = (calcDailyHour/(1000*60*60) > 8) ? 8*1000*60*60 : calcDailyHour/(1000*60*60);
+          dailyHour.push({day: i, hours: calcDailyHour/(1000*60*60), format: formatTime(calcDailyHour)});
+        } else if(dailyHourTab.length == 2){
+          let calcDailyHour = dailyHourTab[1] - dailyHourTab[0];
+          dailyHour.push({day: i, hours: calcDailyHour/(1000*60*60), format: formatTime(calcDailyHour)});
+        } else if(dailyHourTab.length == 3){
+          let calcDailyHour = dailyHourTab[1] - dailyHourTab[0] + new Date().getTime() - dailyHourTab[2];
+          calcDailyHour = (calcDailyHour/(1000*60*60) > 8) ? 8*1000*60*60 : calcDailyHour/(1000*60*60);
+          dailyHour.push({day: i, hours: calcDailyHour/(1000*60*60), format: formatTime(calcDailyHour)});
+        } else if(dailyHourTab.length == 4){
+          let calcDailyHour = dailyHourTab[1] - dailyHourTab[0] + dailyHourTab[3] - dailyHourTab[2];
+          dailyHour.push({day: i, hours: calcDailyHour/(1000*60*60), format: formatTime(calcDailyHour)});
+        } else {
+          dailyHour.push({day: i, hours: 0, format: '00:00'});
+        }
+
+      }
+      
+      return {
+        presence: presence,
+        retard: retard,
+        dailyHour: dailyHour
+      }
+
+    }
+  }
+  console.log('employeeStatict', employeeStatict());
+  // for know how much an employee work from right now;
 
 
   const isAdmin = user.role === "director";
@@ -452,64 +511,7 @@ export default function HomeDashboard({ user, employes, positionsList }) {
     }
   };
 
-  const handlePrintEmployeeQR = () => {
-    const canvas = document.getElementById("employee-qr-code-display");
-    if (canvas) {
-      const printWindow = window.open("", "_blank");
-      const pngUrl = canvas.toDataURL("image/png");
 
-      printWindow.document.write(`
-        <html>
-          <head>
-            <title>Print QR Code</title>
-            <style>
-              body { 
-                display: flex; 
-                justify-content: center; 
-                align-items: center; 
-                height: 100vh; 
-                margin: 0; 
-                font-family: Arial, sans-serif;
-              }
-              .container { 
-                text-align: center; 
-              }
-              h2 { 
-                margin-bottom: 10px; 
-              }
-              p { 
-                margin: 5px 0; 
-              }
-              img { 
-                margin: 20px 0; 
-                max-width: 300px; 
-              }
-              @media print {
-                body { 
-                  margin: 0; 
-                  padding: 0; 
-                }
-                button { 
-                  display: none; 
-                }
-              }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <h2>Employee QR Code</h2>
-              <p><strong>Name:</strong> ${user.name}</p>
-              <img src="${pngUrl}" alt="QR Code" />
-              <p>Scan this QR code for identification</p>
-              <button onclick="window.print()" >Print</button>
-            </div>
-          </body>
-        </html>
-      `);
-
-      printWindow.document.close();
-    }
-  };
 
 
 
@@ -680,30 +682,28 @@ export default function HomeDashboard({ user, employes, positionsList }) {
             </div>
           )}
           
-
-
           {/* Admin Statistics */}
           <div className="stats-section">
             <h2>Business Overview</h2>
             <div className="stats-grid">
               <div className="stat-card" onClick={()=>dispatch(changePage('employees'))}>
                 <FaUsers className="icon-card" />
-                <h3>{drissiFunction().numEmployee}</h3>
+                <h3>{employeesStatistic().numEmployee}</h3>
                 <p>Total Employees</p>
               </div>
               <div className="stat-card">
                 <FaUserClock className="icon-card" />
-                <h3>{drissiFunction().currentWorking}</h3>
+                <h3>{employeesStatistic().currentWorking}</h3>
                 <p>Currently Working</p>
               </div>
               <div className="stat-card">
                 <AiOutlineCheckCircle className="icon-card" />
-                <h3>{drissiFunction().completdScans}</h3>
+                <h3>{employeesStatistic().completdScans}</h3>
                 <p>Completed Scans</p>
               </div>
               <div className="stat-card">
                 <TbClockExclamation className="icon-card" />
-                <h3>{drissiFunction().lateEmployees}</h3>
+                <h3>{employeesStatistic().lateEmployees}</h3>
                 <p>Late Employees</p>
               </div>
             </div>
@@ -717,7 +717,7 @@ export default function HomeDashboard({ user, employes, positionsList }) {
                 </p>
                 <div className="chart-wrapper">
                   <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={drissiFunction().totaldailyHours}>
+                    <BarChart data={employeesStatistic().totaldailyHours}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="name" />
                       <YAxis
@@ -741,100 +741,72 @@ export default function HomeDashboard({ user, employes, positionsList }) {
           </div>
         </div>
       ) : (
-        <div className="employee-dashboard">
-          {/* QR Code Section */}
-          <div className="card qr-card">
-            <h2>Your QR Code</h2>
-            <p>Hi, {user.name}</p>
-            <p>Your work identification code</p>
-            <div className="qr-code-placeholder">
-              <div className="qr-image">
-                <div className="qr-code-wrapper">
-                  <QRCode
-                    id="employee-qr-code-display"
-                    value={user.employee?.QRcode}
-                    size={200}
-                    level="H"
-                    includeMargin={true}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="qr-actions">
-              <button
-                className="secondary-btn"
-                onClick={handleDownloadEmployeeQR}
-              >
-                Download ▼
-              </button>
-              <button className="secondary-btn" onClick={handlePrintEmployeeQR}>
-                Print
-              </button>
-            </div>
-          </div>
+
+        <div className="employee-dashboard">         
 
           {/* Employee Statistics */}
           <div className="stats-section">
             <div className="stats-grid">
               <div className="stat-card">
-                <Ri24HoursFill className="icon-card" />
-                <h3>{employeeStats.hoursWorked}h</h3>
-                <p>Total Hours</p>
+                <AiOutlineCheckCircle className="icon-card" />
+                <h3>{employeeStatict().presence}</h3>
+                <p>Presence</p>
               </div>
               <div className="stat-card">
-                <TbBrandDaysCounter className="icon-card" />
-                <h3>{employeeStats.avgHoursPerDay.toFixed(1)}h</h3>
-                <p>Avg Hours/Day</p>
+                <TbClockExclamation className="icon-card" />
+                <h3>{employeeStatict().retard}</h3>
+                <p>Retard</p>
               </div>
-              <div className="stat-card">
+              {/* <div className="stat-card">
                 <HiCalendarDays className="icon-card" />
                 <h3>{employeeStats.workingDays}</h3>
-                <p>Working Days</p>
-              </div>
+                <p></p>
+              </div> */}
             </div>
 
             <div className="chart-container">
               <div className="section-header">
                 <div className="left">
-                  <h2>Your Working Hours</h2>
+                  <h2>Vos heures de travail</h2>
                 </div>
                 <div className="right">
                   <select
                     className="time-selector"
-                    value={timeRange}
-                    onChange={(e) => setTimeRange(e.target.value)}
+                    value={selectMonth}
+                    onChange={(e) => setSelectMonth(e.target.value)}
                   >
-                    <option value="week">This Week</option>
-                    <option value="month">This Month</option>
+                    {
+                      mois.map((item, index) => <option value={index+1}>{item}</option>)
+                    }
+                    
                   </select>
                 </div>
               </div>
               <div className="chart-card">
-                <h3>{timeRange === "week" ? "Weekly" : "Monthly"} Hours</h3>
+                <h3>Statistique mensuelle</h3>
                 <div className="chart-wrapper">
                   <ResponsiveContainer width="100%" height={300}>
                     <BarChart
-                      data={
-                        timeRange === "week"
-                          ? employeeStats.weeklyData
-                          : employeeStats.monthlyData
-                      }
+                      data={employeeStatict().dailyHour}
                     >
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
+                      <XAxis dataKey="day" />
                       <YAxis
                         domain={[0, 8]}
                         label={{
-                          value: "Hours",
+                          value: "hours",
                           angle: -90,
                           position: "insideLeft",
                         }}
                       />
-                      <Tooltip formatter={(value) => [`${value}h`, "Hours"]} />
+                      <Tooltip 
+                      labelFormatter={(value) => `Day: ${value}`}
+                      formatter={(value, name, props ) => [`${props.payload.format}`]} 
+                      />
                       <Bar dataKey="hours" fill="#407bff" />
                     </BarChart>
                   </ResponsiveContainer>
-                </div>
+                </div>  
               </div>
             </div>
           </div>

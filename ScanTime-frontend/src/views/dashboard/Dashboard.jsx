@@ -17,6 +17,7 @@ import { changePage } from "../../store/SlicePage";
 import Settings from "../../components/dashboard/settings";
 import Profile from "../../components/dashboard/profile";
 import { checkAbsenceApi } from "../../services/scan";
+import TimeSheet from "../../components/dashboard/employee/timeSheet";
 
 export default function Dashboard(){
     const queryClient=useQueryClient();
@@ -24,7 +25,7 @@ export default function Dashboard(){
     const [user, setUser]=useState(null);
     const [notifications, setNotifications]=useState([]);
     const currentPage=  useSelector(state=>state.currentPage.page)
-    console.log(currentPage)
+    // console.log(currentPage)
 
     useEffect(
         ()=>{
@@ -98,7 +99,7 @@ export default function Dashboard(){
     const checkAbsenceMutation = useMutation({
         mutationFn: checkAbsenceApi,
         onSuccess: (data, variable, context)=>{
-            console.log(data)
+            console.log("data", data);
             queryClient.invalidateQueries(["employees"]);
         }
     })
@@ -108,17 +109,20 @@ export default function Dashboard(){
     }
 
     // for check absence for every 18 hour;
-    // useEffect(
-    //     ()=>{
-    //         const checkAbsencePeriod = setInterval(
-    //             ()=>{
-    //                 checkAbsence();
-    //             }, 1000*60*60*18
-    //         )
+    useEffect(
+        ()=>{
+            const checkAbsencePeriod = setInterval(
+                ()=>{
+                    const curTime = new Date().getHours();
+                    if(curTime>=12 && curTime<=13){
+                        checkAbsence();
+                    }
+                }, 1000*60*60
+            )
 
-    //         return ()=>clearInterval(checkAbsencePeriod)
-    //     }, []
-    // )
+            return ()=>clearInterval(checkAbsencePeriod)
+        }, []
+    )
 
 
 
@@ -140,15 +144,16 @@ export default function Dashboard(){
             <div className="part-two">
                 <main className="main-content">
                     {   
-                        currentPage == 'home'?<HomeDashboard user={user} employes={employees} positionsList={positions} />
-                        :currentPage == 'scanner'?<Scanner />
-                        :currentPage == 'employees'?<EmployeeList employees={employees} />
-                        :currentPage == 'settings'? <Settings />
-                        :currentPage == 'profile'? <Profile />
-                        :<h1>not exists</h1>
+                        // currentPage == 'home'?<HomeDashboard user={user} employes={employees || []} positionsList={positions || []} />
+                        // :(currentPage == 'scanner' && user.role == 'director')?<Scanner />
+                        // :(currentPage == 'employees' && user.role == 'director')?<EmployeeList employees={employees} />
+                        // :(currentPage == 'settings' && user.role == 'director')? <Settings />
+                        // :(currentPage == 'timesheet' && user.role == 'employee')? <TimeSheet employee={user} closeTimeSheet={()=> dispatch(changePage('home')) } />
+                        // :currentPage == 'profile'? <Profile />
+                        // :<h1>not exists</h1>
                     
                     }
-                    
+                    <div>hhh</div>
             
                 </main>
             </div>

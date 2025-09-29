@@ -26,17 +26,19 @@ export default function TimeSheet({ employee, closeTimeSheet }) {
     const [selectMonth, setSelectMonth] = useState(curDate.getMonth() + 1);
     const [selectYear, setSelectYear] = useState(curDate.getFullYear());
     const [showData, setShowData] = useState([])
-    const [cardDetailsInfo, setCardDetailsInfo]= useState({})
+    const [cardDetailsInfo, setCardDetailsInfo] = useState({})
     useEffect(
         () => {
-            let totalHours=0;
-            let nbrDaysPresent=0;
-            let nbrDaysAbsent=0;
-            let nbrLate=0;
-            let monthlySalary=0;
-            let unitSalary = employee.employee.salaryHour + employee.employee.position.salaryHour 
+            let totalHours = 0;
+            let nbrDaysPresent = 0;
+            let nbrDaysAbsent = 0;
+            let nbrLate = 0;
+            let conge = 0; // for know how much days this employee takes as vacation
+            let monthlySalary = 0;
+            let unitSalary = employee.employee.salaryHour + employee.employee.position.salaryHour
             let calcWeeklyHour = 0;
             let drissi = [];
+            let calcVacationDays = true;
             // let today = `${new Date(Date.now()).getFullYear()}-${String(new Date(Date.now()).getMonth() + 1).padStart(2, '0')}-${String(new Date(Date.now()).getDate()).padStart(2, '0')}`;
 
             const numDays = new Date(+selectYear, +selectMonth, 0).getDate();
@@ -46,108 +48,125 @@ export default function TimeSheet({ employee, closeTimeSheet }) {
                 const info = { date: `${selectYear}-${String(selectMonth).padStart(2, '0')}-${String(i).padStart(2, '0')}` };
                 info['dayName'] = new Date(`${selectYear}-${selectMonth}-${i}`).toLocaleDateString('fr-FR', { weekday: 'long' });
                 info['dailyHour'] = null;
-                const calcDailyHour = []
-                
-                const  alowScanDate = (new Date().getTime() - new Date(info['date']).getTime())>=0;
-                // console.log(alowScanDate)
-                employee.employee.scans.forEach((scan) => {
-                    // alowScanDate does filter of days 
+                const calcDailyHour = [];
 
-                    if (scan.created_at.match(/[0-9]{4}-[0-9]{2}-[0-9]{2}/g)[0] == info['date'] && alowScanDate) {
-                        // console.log(info['date'])
-                        if (scan.state == "arrivalTime") {
-                            nbrDaysPresent++;
-                            info["arrivalTime"] = scan.created_at.match(/[0-9]{1,4}:[0-9]{1,2}/g)[0]
-                            calcDailyHour.push(new Date(`${today} ${info["arrivalTime"]}`).getTime());
-
-                            if(scan.enRetard == true){
-                                info['state']='Retard';
-                                nbrLate++;
-                            } else {
-                                info['state']='Present';
-                            }
-
-                        } else if (scan.state == "beforeBreak") {
-                            info["beforeBreak"] = scan.created_at.match(/[0-9]{1,4}:[0-9]{1,2}/g)[0]
-                            calcDailyHour.push(new Date(`${today} ${info["beforeBreak"]}`).getTime())
-
-                        } else if (scan.state == "afterBreak") {
-                            info["afterBreak"] = scan.created_at.match(/[0-9]{1,4}:[0-9]{1,2}/g)[0]
-                            calcDailyHour.push(new Date(`${today} ${info["afterBreak"]}`).getTime())
-
-                        } else if (scan.state == "departureTime") {
-                            info["departureTime"] = scan.created_at.match(/[0-9]{1,4}:[0-9]{1,2}/g)[0]
-                            calcDailyHour.push(new Date(`${today} ${info["departureTime"]}`).getTime())
-                        } else if (scan.state == "holidays") {
-                            info['state']="holiday";
+                if(info['dayName'] != 'dimanche' ){
+                    const alowScanDate = (new Date().getTime() - new Date(info['date']).getTime()) >= 0;
+                    // console.log(alowScanDate)
+                    employee.employee.scans.forEach((scan) => {
+                        // alowScanDate does filter of days 
+                        if (scan.state == 'vacation' && calcVacationDays) {
+                            conge++;
                         }
-                    } else if(!alowScanDate && scan.state == 'holidays' && info['state'] == undefined && scan.created_at.match(/[0-9]{4}-[0-9]{2}-[0-9]{2}/g)[0] == info['date'] ) {
-                        info['state'] = 'holiday';
-                        
+
+                        if (scan.created_at.match(/[0-9]{4}-[0-9]{2}-[0-9]{2}/g)[0] == info['date'] && alowScanDate) {
+                            if (scan.state == "arrivalTime") {
+                                nbrDaysPresent++;
+                                info["arrivalTime"] = scan.created_at.match(/[0-9]{1,4}:[0-9]{1,2}/g)[0]
+                                calcDailyHour.push(new Date(`${today} ${info["arrivalTime"]}`).getTime());
+
+                                if (scan.enRetard == true) {
+                                    info['state'] = 'Retard';
+                                    nbrLate++;
+                                } else {
+                                    info['state'] = 'Present';
+                                }
+
+                            } else if (scan.state == "beforeBreak") {
+                                info["beforeBreak"] = scan.created_at.match(/[0-9]{1,4}:[0-9]{1,2}/g)[0]
+                                calcDailyHour.push(new Date(`${today} ${info["beforeBreak"]}`).getTime())
+
+                            } else if (scan.state == "afterBreak") {
+                                info["afterBreak"] = scan.created_at.match(/[0-9]{1,4}:[0-9]{1,2}/g)[0]
+                                calcDailyHour.push(new Date(`${today} ${info["afterBreak"]}`).getTime())
+
+                            } else if (scan.state == "departureTime") {
+                                info["departureTime"] = scan.created_at.match(/[0-9]{1,4}:[0-9]{1,2}/g)[0]
+                                calcDailyHour.push(new Date(`${today} ${info["departureTime"]}`).getTime())
+                            } else if (scan.state == "holidays") {
+                                info['state'] = "jour ferie";
+                            } else if (scan.state == 'vacation') {
+                                info['state'] == 'conge';
+                            } else if (scan.state == "sick"){
+                                info['state'] == 'malade'
+                            }
+                        } else if (scan.state == 'holidays' && info['state'] == undefined && scan.created_at.match(/[0-9]{4}-[0-9]{2}-[0-9]{2}/g)[0] == info['date']) {
+                            info['state'] = 'jour ferie';
+
+                        } else if (scan.created_at.match(/[0-9]{4}-[0-9]{2}-[0-9]{2}/g)[0] == info['date'] && scan.state == 'vacation') {
+                            info["state"] = "conge";
+                        } else if (scan.created_at.match(/[0-9]{4}-[0-9]{2}-[0-9]{2}/g)[0] == info['date'] && scan.state == 'sick') {
+                            info["state"] = "malade"
+                        }
+
+
+                    })
+                    calcVacationDays = false; // for disactivate calculates number of vacation days
+
+                    if (info['state'] == undefined) {
+                        if (alowScanDate) {
+                            info['state'] = 'Absent';
+                            nbrDaysAbsent++;
+                        } else {
+                            info['state'] = 'no Scan'
+                        }
                     }
 
+                    // this part for calculate to any employee how much hour work in day
+                    calcDailyHour.sort((a, b) => a - b)
+                    if (calcDailyHour.length == 1) {
+                        const t = new Date().getTime() - calcDailyHour[0];
+                        info['dailyHour'] = (t<0 || t>1000*60*60*8)?1000*60*60*8:t;
+                        calcWeeklyHour += info['dailyHour'];
 
-                })
-                
-                if(info['state'] == undefined  ){
-                    if(alowScanDate){
-                        info['state']='Absent';
-                        nbrDaysAbsent++;
+                    } else if (calcDailyHour.length == 2) {
+                        info['dailyHour'] = calcDailyHour[1] - calcDailyHour[0];
+                        calcWeeklyHour += info['dailyHour'];
+
+                    } else if (calcDailyHour.length == 3) {
+                        const t = calcDailyHour[1] - calcDailyHour[0] + new Date().getTime() - calcDailyHour[2];
+                        info['dailyHour'] = (t<0 || t>1000*60*60*8)?1000*60*60*8:t;
+                        calcWeeklyHour += info['dailyHour'];
+
+                    } else if (calcDailyHour.length == 4) {
+                        info['dailyHour'] = calcDailyHour[1] - calcDailyHour[0] + calcDailyHour[3] - calcDailyHour[2];
+                        calcWeeklyHour += info['dailyHour'];
+                    } else if (info['state'] == 'holiday' || info["state"] == 'conge' || info["state"] == "jour ferie" || info["state"] == "malade") {
+                        info['dailyHour'] = 8 * 60 * 60 * 1000;
+                        if(info['dayName'] == "samedi"){
+                            info['dailyHour'] = 4 * 60 * 60 * 1000;
+                        }
+                        calcWeeklyHour += info['dailyHour'];
+
                     } else {
-                        info['state']='no Scan'
+                        info['dailyHour'] = 0;
+                    }
+
+                    // about totalHours variable is total to all daily hour
+                    totalHours += info['dailyHour'];
+                    info['dailyHour'] = formatTime(+info['dailyHour']);
+                    if(info['dayName'] != 'dimanche'){
+                        drissi.push(info);
                     }
                 }
-            
-                // this part for calculate to any employee how much hour work in day
-                calcDailyHour.sort((a, b) => a - b)
-                if (calcDailyHour.length == 1) {
-                    info['dailyHour'] = new Date().getTime() - calcDailyHour[0];
-                    calcWeeklyHour +=info['dailyHour'];
 
-                } else if (calcDailyHour.length == 2) {
-                    info['dailyHour'] = calcDailyHour[1] - calcDailyHour[0];
-                    calcWeeklyHour +=info['dailyHour'];
-
-                } else if (calcDailyHour.length == 3) {
-                    info['dailyHour'] = calcDailyHour[1] - calcDailyHour[0] + new Date().getTime() - calcDailyHour[2];
-                    calcWeeklyHour +=info['dailyHour'];
-
-                } else if (calcDailyHour.length == 4) {
-                    info['dailyHour'] = calcDailyHour[1] - calcDailyHour[0] + calcDailyHour[3] - calcDailyHour[2];
-                    calcWeeklyHour +=info['dailyHour'];
-                } else if (info['state'] == 'holiday' ) {
-                    info['dailyHour']= 8*60*60*1000;
-                    calcWeeklyHour +=info['dailyHour'];
-
-                } else {
-                    info['dailyHour'] = 0;
-
-                }
-                
-                // about totalHours variable is total to all daily hour
-                totalHours += info['dailyHour'];
-                info['dailyHour'] = formatTime(+info['dailyHour']);
-                console.log(info)
-                drissi.push(info);
-                
-                if(info['dayName'] == 'dimanche' || i == numDays){
+                if (info['dayName'] == 'dimanche' || i == numDays) {
                     const python = {};
-                    python['date']='total horaire par semaine';
-                    python['dayName']="";
-                    python['arrivalTime']=" ";
-                    python['beforeBreak']=" ";
-                    python['afterBreak']=" ";
-                    python['departureTime']=" ";
-                    python['dailyHour']= formatTime(calcWeeklyHour);
+                    python['date'] = 'total horaire par semaine';
+                    python['dayName'] = "";
+                    python['arrivalTime'] = " ";
+                    python['beforeBreak'] = " ";
+                    python['afterBreak'] = " ";
+                    python['departureTime'] = " ";
+                    python['dailyHour'] = formatTime(calcWeeklyHour);
                     drissi.push(python);
-                    console.log(calcWeeklyHour);
                     calcWeeklyHour = 0;
                 }
             }
 
-            monthlySalary = (unitSalary * totalHours/(1000*60*60)).toFixed(2)
+            monthlySalary = (unitSalary * totalHours / (1000 * 60 * 60)).toFixed(2)
 
-            
+
             setShowData(drissi);
             // console.log(drissi)
 
@@ -156,7 +175,8 @@ export default function TimeSheet({ employee, closeTimeSheet }) {
                 nbrDaysAbsent: nbrDaysAbsent,
                 nbrDaysPresent: nbrDaysPresent,
                 totalHours: totalHours,
-                monthlySalary: monthlySalary
+                monthlySalary: monthlySalary,
+                conge: conge / 4
             });
 
         }, [selectMonth, selectYear]
@@ -167,11 +187,11 @@ export default function TimeSheet({ employee, closeTimeSheet }) {
             "numbre des jours present": cardDetailsInfo['nbrDaysPresent'],
             "numbre des jours absent": cardDetailsInfo['nbrDaysAbsent'],
             "numbre des retard": cardDetailsInfo['nbrLate'],
-            "total des hours travaill": formatTime(cardDetailsInfo['totalHours']) ,
+            "total des hours travaill": formatTime(cardDetailsInfo['totalHours']),
             "le salaire mensuel (DH)": cardDetailsInfo['monthlySalary'],
         }]
         const worksheet = XLSX.utils.json_to_sheet(showData);
-        XLSX.utils.sheet_add_json(worksheet, [{},{}], { skipHeader: false, origin: -1 });
+        XLSX.utils.sheet_add_json(worksheet, [{}, {}], { skipHeader: false, origin: -1 });
 
         XLSX.utils.sheet_add_json(worksheet, summaryData, { skipHeader: false, origin: -1 });
 
@@ -210,7 +230,7 @@ export default function TimeSheet({ employee, closeTimeSheet }) {
             </div>
 
             <div className='download'>
-                <button onClick={()=>downloadTimeSheet()}>
+                <button onClick={() => downloadTimeSheet()}>
                     <LuDownload />
                     Exporter vers Excel
                 </button>
@@ -223,6 +243,7 @@ export default function TimeSheet({ employee, closeTimeSheet }) {
             <CardDetails title='Jours Absents' value={`${cardDetailsInfo['nbrDaysAbsent']}`} />
             <CardDetails title='Retards Totaux' value={`${cardDetailsInfo['nbrLate']}`} />
             <CardDetails title='Salaire Mensuel' value={`${cardDetailsInfo['monthlySalary']} DH`} />
+            <CardDetails title='Nombre de jours de congé par an' value={`${cardDetailsInfo['conge']}`} />
         </div>
 
         <div className='tableDetails'>

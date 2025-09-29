@@ -93,7 +93,8 @@ class AppController extends Controller
                 unset($formfield['profile']);
                 if($request->hasFile('profile')){
                     $profileName = time().'.'. $request->file('profile')->extension();
-                    $formfield['profile']=asset('/storage/'.$request->file('profile')->storeAs('', $profileName, 'public'));
+                    $request->file('profile')->storeAs('users', $profileName, 'public');
+                    $formfield['profile']=asset('/storage/users/'.$profileName);
                 }
                 
                 $user->fill($formfield);

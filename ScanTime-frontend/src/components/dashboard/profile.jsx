@@ -9,7 +9,7 @@ import { updateEmployeeApi } from "../../services/employee";
 export default function Profile(){
     const queryClient = useQueryClient();
     const userActive = queryClient.getQueryData(["loggedUser"]).user;
-    console.log(userActive);
+    console.log("userActive", userActive);
 
     const [isUpdate, setIsUpdate]=useState(false);
     const [imageName, setImageName]=useState('');
@@ -113,7 +113,7 @@ export default function Profile(){
                     {
                         userActive.role == 'employee' && <div>
                             <p className="title">Position: </p>
-                            <p className="value">{userActive.position.name}</p>                       
+                            <p className="value">{userActive.employee.position.name}</p>                       
                         </div>
                     }
                 </div>

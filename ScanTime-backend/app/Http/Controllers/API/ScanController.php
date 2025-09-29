@@ -153,16 +153,23 @@ class ScanController extends Controller
 
             $startDate = Carbon::parse($request->input('startDate'));
             $endDate   = Carbon::parse($request->input('endDate'));
-
             $employee = Employee::where('user_id', $id)->first();
-            $dayNumber = $startDate->diffInDays($endDate) + 1;
-
-
+            
+            $existScan = Scan::where("employee_id", $employee->id)
+            ->whereBetween('created_at', [$startDate, $endDate])->get();
+            if(count($existScan)>0){
+                return response()->json([
+                    'message'=>"create time off rejected"
+                ]);
+            }
+            
+            $dayNumber = $startDate->diffInDays($endDate) ;
+            $scansList = [];
             for ($i = 0; $i <= $dayNumber; $i++) {
                 $date = $startDate->copy()->addDays($i);
                 if($date->translatedFormat("l") != 'dimanche'){
                     for($j = 0; $j < 4; $j++){
-                        Scan::create([
+                        array_push($scansList, [
                             'employee_id' => $employee->id,
                             'created_at'  => $date->format('Y-m-d'),
                             'updated_at'  => $date->format('Y-m-d'),
@@ -171,11 +178,11 @@ class ScanController extends Controller
                     }
                 }
             }
-
+            Scan::insert($scansList);
             return response()->json([
-                'message'        => "This operation was applied successfully.",
-                'number_of_days' => $dayNumber
+                'message'=>"create time off successful"
             ]);
+
         } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
@@ -215,7 +222,6 @@ class ScanController extends Controller
                 $query->whereDate('created_at', Carbon::today() );
             }, 0)->get(); 
     
-
             $scans = [];
             $absentsEmployees = [];
             foreach($absentEmployees as $absentEmployee){
@@ -286,11 +292,4 @@ class ScanController extends Controller
     }
 
 
-
-
 }
-
-
-
-
-

@@ -201,6 +201,8 @@ class AuthController extends Controller
         $currentUser = Auth::user();
         if($currentUser->role == 'employee'){
             $currentUser->load('employee');
+            $currentUser->employee->load('position');
+            $currentUser->employee->load('scans');
         }
         return response()->json([
             'user' => $currentUser
