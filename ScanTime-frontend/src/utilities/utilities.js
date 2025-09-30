@@ -1,3 +1,5 @@
+import { Navigate, useNavigate } from "react-router-dom";
+
 // this funciton for get token value and use it as bearer token
 const getToken = () => {
     let token = document.cookie.match(/token=[0-9A-Za-z|]+/);
@@ -7,6 +9,7 @@ const getToken = () => {
     }
     return false;
 }
+
 
 const formatTime = (t) => {
     let time = t/1000;
@@ -25,7 +28,7 @@ const inverseFormatTime = (t) =>{
     return (h*60 +m)*60*1000;
 }
 
-export { getToken, formatTime, inverseFormatTime   };
+export { getToken, formatTime, inverseFormatTime };
 
 
 

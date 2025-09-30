@@ -5,6 +5,9 @@ import { registerApi } from "../../services/auth";
 import { useMutation } from "@tanstack/react-query";
 
 export default function Register() {
+  // controleRoute function determines the routes allow if token exists and the routes don't allow if token not exsists
+
+
   const navigate = useNavigate()
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");

@@ -8,6 +8,9 @@ import { useMutation } from "@tanstack/react-query";
 
 
 export default function VerificationCode() {
+  // controleRoute function determines the routes allow if token exists and the routes don't allow if token not exsists
+
+
   const navigate = useNavigate();
   const location = useLocation();
   const [code, setCode] = useState(["", "", "", "", "", ""]);

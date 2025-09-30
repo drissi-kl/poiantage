@@ -11,6 +11,7 @@ import { loginApi } from "../../services/auth";
 
 
 export default function Login() {
+    // controleRoute function determines the routes allow if token exists and the routes don't allow if token not exsists
     const queryClient = useQueryClient();
     const [errorMessage, setErrorMessage]=useState('');
     const navigate = useNavigate();
@@ -41,7 +42,7 @@ export default function Login() {
                 reset({email: variable.email, password:''});
 
             }else if(message == "Login successful."){
-                document.cookie = `token=${data.token}; path=/; max-age= ${60*60*24}`;
+                document.cookie = `token=${data.token}; path=/; max-age= ${60*60*18}`;
 
                 // queryClient.setQueryData(['user'], data.user);
                 // queryClient.setQueryData(['notifications'], data.notifications || []);
@@ -52,7 +53,6 @@ export default function Login() {
     })
     
     const sendForm=(data)=>{
-        console.log(data)
         loginMutation.mutate(data)
     }
 

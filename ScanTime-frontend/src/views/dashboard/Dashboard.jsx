@@ -22,6 +22,9 @@ import QRCode from "../../components/dashboard/employee/qrcode";
 import QRCodeEmp from "../../components/dashboard/employee/qrcode";
 
 export default function Dashboard(){
+    // controleRoute function determines the routes allow if token exists and the routes don't allow if token not ex
+
+
     const queryClient=useQueryClient();
     const dispatch = useDispatch();
     const [user, setUser]=useState(null);
