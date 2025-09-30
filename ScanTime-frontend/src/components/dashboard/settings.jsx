@@ -29,7 +29,6 @@ export default function Settings() {
                 
             } else{
                 setErrorMessage("cette position déjà créé, tu peut modifier elle");
-                console.log(message)
             }
 
             createPositionForm.reset();
@@ -84,15 +83,12 @@ export default function Settings() {
                 }, 2000
             );
 
-            console.log('update position message', message);
 
         }
     })
 
 
     const updateForm = (e) => {
-        console.log('upgrade postion', e);
-        console.log('id position', isUpdatePosition.id);
         updatePositionMutation.mutate({id: isUpdatePosition.id, body: e});
     }
 

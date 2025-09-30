@@ -6,7 +6,6 @@ export default function QRCodeEmp({ employee }) {
     
     const downloadBtn = () => {
         const canvas = document.getElementById("drissi");
-        console.log("canvas", canvas)
         const qrcodeUrl = canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
         const downloadLink = document.createElement('a');
         document.body.appendChild(downloadLink);

@@ -84,7 +84,6 @@ export default function Scanner() {
     ()=> {
       setErrorMessage(null);
       setSuccessMessage(null);
-      console.log(videoRef);
       if(videoRef.current && scanning ){
         qrScannerRef.current = new QrScanner(
           videoRef.current,
@@ -113,7 +112,6 @@ export default function Scanner() {
               )
 
             } catch(error) {
-              console.log(error.message);
               setErrorMessage(error.message);
             }         
           },
@@ -141,7 +139,6 @@ export default function Scanner() {
   const checkAbsenceMutation = useMutation({
     mutationFn: checkAbsenceApi,
     onSuccess: (data, variable, context)=>{
-      console.log(data)
       queryClient.invalidateQueries(["employees"]);
     }
   })

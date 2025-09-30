@@ -29,7 +29,6 @@ export default function Sidebar({ user }) {
   //     const token = getDecryptedToken(secretKey);
   //     settoken(token);
   //   } else {
-  //     //console.log("token cookie not found");
   //   }
   // }, []);
   
@@ -49,14 +48,11 @@ export default function Sidebar({ user }) {
 
   const handleLogout = async ()=> {
     try{
-      console.log('you click on logout button');
       const response = await logoutApi();
       document.cookie= `token=${getToken()}; expires=${new Date(Date.now()).toUTCString()}`;
       queryClient.removeQueries();
       navigate('/');
-      console.log(response);
     }catch(error){
-      console.log(error.message);
     }
   }
   

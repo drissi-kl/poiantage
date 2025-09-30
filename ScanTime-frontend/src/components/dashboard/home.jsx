@@ -241,7 +241,6 @@ export default function HomeDashboard({ user, employes, positionsList }) {
 
     }
   }
-  console.log('employeeStatict', employeeStatict());
   // for know how much an employee work from right now;
 
 
@@ -326,7 +325,6 @@ export default function HomeDashboard({ user, employes, positionsList }) {
   };
 
   // if(employes){
-  //   console.log("processEmployeeData",processEmployeeData());
   // }
 
   // Process data for the current employee (non-admin view)
@@ -458,8 +456,6 @@ export default function HomeDashboard({ user, employes, positionsList }) {
   const readNotificationMutation = useMutation({
     mutationFn: (id)=> readNotificationApi(id),
     onSuccess: (data, variable, context)=>{
-      console.log('data', data);
-      console.log('variable', variable);
       queryClient.invalidateQueries(["loggedUser"]);
       
 

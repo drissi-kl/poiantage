@@ -9,7 +9,6 @@ import { updateEmployeeApi } from "../../services/employee";
 export default function Profile(){
     const queryClient = useQueryClient();
     const userActive = queryClient.getQueryData(["loggedUser"]).user;
-    console.log("userActive", userActive);
 
     const [isUpdate, setIsUpdate]=useState(false);
     const [imageName, setImageName]=useState('');
@@ -25,8 +24,6 @@ export default function Profile(){
     const updateProfileMutation = useMutation({
         mutationFn: (data)=>updateEmployeeApi(data.id, data.body),
         onSuccess: (data, variable, context)=>{
-            console.log('data', data);
-            console.log('variable', variable);
             queryClient.invalidateQueries(["loggedUser"]);
             setIsUpdate(false);
             setImageName('');

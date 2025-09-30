@@ -52,7 +52,6 @@ export default function TimeSheet({ employee, closeTimeSheet }) {
 
                 if(info['dayName'] != 'dimanche' ){
                     const alowScanDate = (new Date().getTime() - new Date(info['date']).getTime()) >= 0;
-                    // console.log(alowScanDate)
                     employee.employee.scans.forEach((scan) => {
                         // alowScanDate does filter of days 
                         if (scan.state == 'vacation' && calcVacationDays) {
@@ -168,7 +167,6 @@ export default function TimeSheet({ employee, closeTimeSheet }) {
 
 
             setShowData(drissi);
-            // console.log(drissi)
 
             setCardDetailsInfo({
                 nbrLate: nbrLate,

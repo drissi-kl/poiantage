@@ -260,10 +260,10 @@ class ScanController extends Controller
         try{
             $startDate = Carbon::parse($request->input('startDate'));
             $endDate = Carbon::parse($request->input('endDate'));
-            
+            $empNotSelected = $request->input('employees');
+            $employees = Employee::whereNotIn('id', $empNotSelected)->get();
             $nbrDays = $startDate->diffInDays($endDate)+1;
-            $employees = Employee::all();
-
+            
             $scans = [];
             for($i=0; $i<$nbrDays; $i++){
                 foreach( $employees as $employee ){

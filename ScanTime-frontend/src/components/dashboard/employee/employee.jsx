@@ -18,7 +18,6 @@ export default function EmployeeList(){
     // get employees from cache
     const queryClient = useQueryClient();
     const employees = queryClient.getQueryData(["employees"]);
-    console.log('employees for employe page', employees)
     // const {data: employees }=useQuery()
 
     // for search form and filter employee you want to show
@@ -83,7 +82,7 @@ export default function EmployeeList(){
                     <button className="leave-request-btn" 
                         onClick={()=>opentLeaveRequest()} 
                     >
-                        Demande de Congé
+                        Demande de Jour ferie
                     </button>
                 </div>
             </div>
@@ -146,7 +145,7 @@ export default function EmployeeList(){
             }
 
             {
-                showLeaveRequest && <LeaveRequest closeLeaveRequest={()=>{setShowLeaveRequest(false)}} />
+                showLeaveRequest && <LeaveRequest employees={employees} closeLeaveRequest={()=>{setShowLeaveRequest(false)}} />
             }
 
         </div>

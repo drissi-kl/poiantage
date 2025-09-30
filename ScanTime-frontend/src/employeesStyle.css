@@ -61,12 +61,17 @@
         justify-content: end;   
     }
 
-    .leaveRequest .container form .buttons button{ 
+    .leaveRequest .container form .buttons button, .leaveRequest .container .selectionBtn{ 
         border: none;
         border-radius: 5px;
         padding: 8px 15px;
         font-size: 15px;
         font-weight: 500;
+    }
+    .leaveRequest .container .selectionBtn{
+        margin: 10px;
+        background-color: #2563EB;
+        color: white  
     }
     .leaveRequest .container .buttons button.closeBtn{
         border: 1px solid #2563EB;
@@ -76,6 +81,37 @@
         background-color: #2563EB;
         color: white    
     }
+
+
+    /* selection party */
+    .leaveRequest .container .selectionEmps .selectionEmp{
+        height: 300px;
+        overflow-y: scroll;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .leaveRequest .container .selectionEmps .selectionEmp .item{
+        display:flex;
+        gap: 10px;
+    }
+    .leaveRequest .container .selectionEmps .selectionEmp .item .name{
+        font-size: 18px;
+        font-weight: 500;
+        margin-right: 5px;
+    }
+    .leaveRequest .container .selectionEmps .selectionEmp .item .position{
+    }
+    
+    /* selection party */
+
+
+
+
+
+
 /* leave request */
 
 

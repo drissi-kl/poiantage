@@ -64,13 +64,10 @@ export default function EmployeeDetails({employee, closeEmployeeDetails}){
                     , 2000
                 )
             }
-            console.log("data", data);
-            console.log("variable", variable);
         }
     })
     const expTimeFormData = (e)=>{
         e.employee_id= employee.employee.id;
-        console.log('storeExpTime', e);
         exceptionalTimeMutation.mutate(e)
         setIsExpTime(false);
         storeExpTime.reset()
@@ -93,8 +90,6 @@ export default function EmployeeDetails({employee, closeEmployeeDetails}){
     const deleteExpTimeMutation = useMutation({
         mutationFn: (id)=>deleteExpTimeApi(id),
         onSuccess: (data, variable, context)=>{
-            console.log('data', data);
-            console.log('variable', variable);
             if(data.message == "delete exceptional time for employee successfully"){
                 queryClient.invalidateQueries(['exceptionTime']);
                 setSuccessMessage('supprimer ce temps exceptionnelle success');
@@ -140,8 +135,6 @@ export default function EmployeeDetails({employee, closeEmployeeDetails}){
                 )
             }
 
-            console.log("data", data);
-            console.log("variable", variable.body.type);
             setIsTimeOff(false);
             timeOffForm.reset();
             queryClient.invalidateQueries(["employees"]);
@@ -397,7 +390,6 @@ export default function EmployeeDetails({employee, closeEmployeeDetails}){
 
                 <button className="closeBtn" onClick={(e)=>{
                     e.stopPropagation();
-                    console.log('close');
                     closeEmployeeDetails();
                 }}>ferme</button>
             </div>
