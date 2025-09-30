@@ -5,9 +5,8 @@ import { MdOutlineQrCodeScanner } from "react-icons/md";
 import { FaRegListAlt } from "react-icons/fa";
 import { IoIosCreate } from "react-icons/io";
 import { CiSettings } from "react-icons/ci";
-// import { useDispatch } from "react-redux";
-// import { setCurrentPage } from "../../store/scantimeSlice";
-// import { logout } from "../../store/scantimeSlice";
+import { BsQrCode } from 'react-icons/bs';
+
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,10 +14,7 @@ import { changePage } from "../../store/SlicePage";
 import { logoutApi } from "../../services/auth";
 import customAPI from "../../services/customAPI";
 import { getToken } from "../../utilities/utilities";
-// import { baseurlapi } from "../../store/scantimeSlice";
-// import getCookie from "../../store/getcookies";
-// import { getDecryptedToken } from "../../store/getcookies";
-// import { useSelector } from "react-redux";
+
 
 
 
@@ -182,6 +178,16 @@ export default function Sidebar({ user }) {
                 >
                   <Ri24HoursFill className="icon" />
                   {!isCollapsed && <span>Time Sheet</span>}
+                </li>
+                <li
+                  className={`item ${currentPage === "Timetable" ? "active" : ""}`}
+                  onClick={() =>
+
+                    switchPage("qrcode")
+                  }
+                >
+                  <BsQrCode className="icon" />
+                  {!isCollapsed && <span>QR code</span>}
                 </li>
                 
               </>

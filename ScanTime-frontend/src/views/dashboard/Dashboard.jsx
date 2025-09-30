@@ -18,6 +18,8 @@ import Settings from "../../components/dashboard/settings";
 import Profile from "../../components/dashboard/profile";
 import { checkAbsenceApi } from "../../services/scan";
 import TimeSheet from "../../components/dashboard/employee/timeSheet";
+import QRCode from "../../components/dashboard/employee/qrcode";
+import QRCodeEmp from "../../components/dashboard/employee/qrcode";
 
 export default function Dashboard(){
     const queryClient=useQueryClient();
@@ -25,7 +27,6 @@ export default function Dashboard(){
     const [user, setUser]=useState(null);
     const [notifications, setNotifications]=useState([]);
     const currentPage=  useSelector(state=>state.currentPage.page)
-    // console.log(currentPage)
 
     useEffect(
         ()=>{
@@ -51,33 +52,6 @@ export default function Dashboard(){
         queryFn: getAllPositionApi,
     })
 
-    // instead create store by redux and put current page to it, we create a query by only key and save into it value on current page and use cache 
-    // const {data: currentPage}=useQuery({
-    //     queryKey: ['currentPage'],
-    //     queryFn: ()=>'home',
-    //     initialData: ()=> queryClient.getQueryData(['currentPage'])
-    // })
-    
-    
-    useEffect(
-        ()=>{
-            // if(queryClient.getQueryData(['user'])){
-            //     setUser(queryClient.getQueryData(['user']));
-            // } else {
-            //     const store =JSON.parse(localStorage.getItem('REACT_QUERY_OFFLINE_CACHE'));
-            //     const dd = store.clientState.queries.find((item)=>{return item.queryKey[0]=='user' })
-            //     setUser(dd?.state.data)
-            // }    
-            // if(queryClient.getQueryData(['notifications'])){
-            //     setNotifications(queryClient.getQueryData(['notifications']));
-            // } else {
-            //     const store =JSON.parse(localStorage.getItem('REACT_QUERY_OFFLINE_CACHE'));
-            //     const dd = store.clientState.queries.find((item)=>{return item.queryKey[0]=='notifications' })
-            //     setNotifications(dd?.state.data)
-            // }         
-        }
-        ,[queryClient]
-    )
 
     useEffect(
         ()=>{
@@ -89,10 +63,8 @@ export default function Dashboard(){
 
 
 
-    // console.log("user", user)
-    // console.log("notifications", notifications)
-    console.log("employees", employees)
-    // console.log("positions", positions)
+    console.log("user", user)
+   
 
 
 
@@ -144,16 +116,17 @@ export default function Dashboard(){
             <div className="part-two">
                 <main className="main-content">
                     {   
-                        // currentPage == 'home'?<HomeDashboard user={user} employes={employees || []} positionsList={positions || []} />
-                        // :(currentPage == 'scanner' && user.role == 'director')?<Scanner />
-                        // :(currentPage == 'employees' && user.role == 'director')?<EmployeeList employees={employees} />
-                        // :(currentPage == 'settings' && user.role == 'director')? <Settings />
-                        // :(currentPage == 'timesheet' && user.role == 'employee')? <TimeSheet employee={user} closeTimeSheet={()=> dispatch(changePage('home')) } />
-                        // :currentPage == 'profile'? <Profile />
-                        // :<h1>not exists</h1>
+                        currentPage == 'home'?<HomeDashboard user={user} employes={employees || []} positionsList={positions || []} />
+                        :(currentPage == 'scanner' && user.role == 'director')?<Scanner />
+                        :(currentPage == 'employees' && user.role == 'director')?<EmployeeList employees={employees} />
+                        :(currentPage == 'settings' && user.role == 'director')? <Settings />
+                        :(currentPage == 'timesheet' && user.role == 'employee')? <TimeSheet employee={user} closeTimeSheet={()=> dispatch(changePage('home')) } />
+                        :(currentPage == 'qrcode' && user.role == 'employee') ? <QRCodeEmp employee={user} />
+                        :currentPage == 'profile'? <Profile />
+                        :<h1>not exists</h1>
                     
                     }
-                    <div>hhh</div>
+                    
             
                 </main>
             </div>

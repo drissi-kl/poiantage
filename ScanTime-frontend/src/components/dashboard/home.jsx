@@ -8,37 +8,36 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { FaUsers } from "react-icons/fa";
-import { TbBrandDaysCounter } from "react-icons/tb";
-import { HiCalendarDays, HiUnderline } from "react-icons/hi2";
-import { Ri24HoursFill } from "react-icons/ri";
-// 
+import { FaUsers } from "react-icons/fa"; 
 import { AiOutlineCheckCircle } from "react-icons/ai";
-import { MdWork } from "react-icons/md"; 
 import { FaUserClock } from "react-icons/fa";
-
-import { MdAlarm } from "react-icons/md";
-import { FaRegClock } from "react-icons/fa";
 import { TbClockExclamation } from "react-icons/tb";
-
 import { MdNotifications } from 'react-icons/md';
+import { MdClose } from 'react-icons/md';
 
+import { PiChecksLight } from 'react-icons/pi';
+import { PiChecksBold } from 'react-icons/pi';
 
 import { QRCodeCanvas as QRCode } from "qrcode.react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
+
 import { createEmployeeApi } from "../../services/employee";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
 import { changePage } from "../../store/SlicePage";
 import { formatTime } from "../../utilities/utilities";
+import { readNotificationApi } from "../../services/notification";
 
 export default function HomeDashboard({ user, employes, positionsList }) {
 
   // drissi
   const dispatch = useDispatch();
   const queryClient= useQueryClient();
+
+  const [showNotifiction, setShowNotification]=useState(false);
+
+
   const [successMessage, setSuccessMessage]= useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -454,6 +453,28 @@ export default function HomeDashboard({ user, employes, positionsList }) {
     };
   };
 
+
+  // read notification
+  const readNotificationMutation = useMutation({
+    mutationFn: (id)=> readNotificationApi(id),
+    onSuccess: (data, variable, context)=>{
+      console.log('data', data);
+      console.log('variable', variable);
+      queryClient.invalidateQueries(["loggedUser"]);
+      
+
+
+    }
+  })
+
+
+
+
+
+  // read notification
+
+
+
   const employeeStats = processCurrentEmployeeData();
   const processedEmployees = processEmployeeData();
 
@@ -528,17 +549,49 @@ export default function HomeDashboard({ user, employes, positionsList }) {
           />
         </h1>
         {isAdmin && (<>
-          
-          <button
-            className="primary-btn"
-            onClick={() => {
-              setShowAddForm(!showAddForm);
-              setShowQRCode(false);
-              setGeneratedQR("");
-            }}
-          >
-            + Add Member
-          </button>
+          <div className="adminSideDashboard" >
+            <div className="notification" onClick={()=>setShowNotification(true)} >
+              {user.director_notification.reduce((a,b)=>{return  !b.read_at? a+1:a },0)>0 && <span></span>}
+              <MdNotifications />
+            </div>
+            {
+              showNotifiction && <div className="showNotifiction">
+                <div className="showNotifictionHeader">
+                  <p>{user.director_notification.reduce((a,b)=>{return  !b.read_at? a+1:a }, 0  )  } notification</p>
+                  <button onClick={()=>setShowNotification(false)}>
+                    <MdClose />
+                  </button>
+                </div>
+                <div className="showNotifictionBody" >
+                  {
+                    user.director_notification.sort((a,b)=> -a.id + b.id).map((item,index)=>{return <div key={index}
+                        onClick={()=>readNotificationMutation.mutate(item.id) }
+                        style={{backgroundColor:'#eee'}}
+                      >
+                      <p className="content">{item.content}</p>
+                      <p className="time">
+                        <p style={item.read_at?{color:"#2563EB"}:{color:"#aaa"}}  ><PiChecksBold /></p>
+                        {item.created_at.match(/[0-9]{4}-[0-9]{2}-[0-9]{2}/)  }</p>
+                    </div>  })
+                  }
+                </div>
+                
+              </div>
+
+            }
+            
+            <button
+              className="primary-btn"
+              onClick={() => {
+                setShowAddForm(!showAddForm);
+                setShowQRCode(false);
+                setGeneratedQR("");
+              }}
+            >
+              + Add Member
+            </button>
+
+          </div>
         </>)}
       </div>
 

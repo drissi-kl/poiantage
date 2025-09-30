@@ -204,6 +204,9 @@ class AuthController extends Controller
             $currentUser->employee->load('position');
             $currentUser->employee->load('scans');
         }
+        if($currentUser->role == 'director'){
+            $currentUser->load('directorNotification');
+        }
         return response()->json([
             'user' => $currentUser
         ]);

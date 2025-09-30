@@ -1,9 +1,9 @@
 import axios from "axios"
 import customAPI from "./customAPI";
 
-const readNotification = async (id)=>{
+const readNotificationApi = async (id)=>{
     try{
-        const response = await customAPI.get(`/readNotification/{id}`);
+        const response = await customAPI.get(`/readNotification/${id}`);
         return response.data;
 
     }catch(error){
@@ -15,4 +15,4 @@ const readNotification = async (id)=>{
 }
 
 
-export {readNotification  }
+export {readNotificationApi  }

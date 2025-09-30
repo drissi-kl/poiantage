@@ -1,11 +1,16 @@
 import { FaArrowAltCircleLeft } from 'react-icons/fa';
 import { FaArrowLeft } from 'react-icons/fa';
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";    
 import { useForm } from "react-hook-form";
 import { updateEmployeeApi } from "../../../services/employee";
 import { createExpTimeApi, deleteExpTimeApi, getExpTimeApi } from '../../../services/exceptionTime';
 import { createTimeOffApi } from '../../../services/scan';
+
+import QRCode from "qrcode";
+import { QRCodeCanvas } from 'qrcode.react';
+
 // import { defaultImg } from "/images/defaultImg.webp"
 
 export default function EmployeeDetails({employee, closeEmployeeDetails}){
@@ -150,6 +155,21 @@ export default function EmployeeDetails({employee, closeEmployeeDetails}){
 // time off logic #######################################
 
 
+// download QRcode logic ################################
+    const downloadQRcode = async () => {
+        const canvas = document.getElementById('qrcodeshape')
+        const qrcodeUrl = canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");   
+        const downloadLink = document.createElement('a');
+        document.body.appendChild(downloadLink);
+        downloadLink.href = qrcodeUrl;
+        downloadLink.download = `${employee.name.match(/[A-Za-z]+/)[0]}-QRcode.png`
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        
+    }
+// download QRcode logic ################################
+
+
 
 
     useEffect(
@@ -192,11 +212,25 @@ export default function EmployeeDetails({employee, closeEmployeeDetails}){
             <div className="displayData" onClick={(e)=>{e.stopPropagation()}}>
                 <div className="left-side">
                     <div className="image">
-                        <img src="/images/defaultImg.webp" alt="not found" />
+                        <img src={employee.profile || "/images/defaultImg.webp"} alt="not found" />
                     </div>
                     <div className="name">
                         <p className="title">nom complet:</p>
                         <p className="value">{employee.name}</p>
+                    </div>
+                    <div>
+                        <div style={{display:'none'}}>
+                            <QRCodeCanvas
+                                id="qrcodeshape"
+                                value={employee.employee.QRcode}
+                                size={400}
+                                level="H"
+                                includeMargin={true}
+                                marginSize={10}
+                                bgColor='#eee'
+                            />
+                        </div>
+                        <button className='downloadBtn' onClick={()=>downloadQRcode()}>download QR</button>
                     </div>
                 </div>
 

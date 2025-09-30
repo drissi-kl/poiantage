@@ -1,0 +1,47 @@
+.qrcode{
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.qrcode .container{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: #eee;
+    box-shadow: 0px 0px 10px 4px #bbb;
+    /* width: 50%; height: 80%; */
+    padding: 50px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+}
+
+.qrcode .container .downloadBtn{
+    border:none;
+    padding: 10px 15px;
+    background: #2563EB;
+    font-size: 16px;
+    color: white; 
+    border-radius: 5px;  
+}
+.qrcode .container .downloadBtn:hover{
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
